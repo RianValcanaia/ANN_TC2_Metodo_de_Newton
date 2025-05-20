@@ -1,8 +1,13 @@
 from sympy import symbols, diff, lambdify, pi, E, Matrix, solve_linear_system
-from sympy.parsing.sympy_parser import parse_expr
+from sympy.parsing.sympy_parser import (
+    parse_expr, 
+    standard_transformations, 
+    implicit_multiplication_application, 
+    convert_xor
+)
 
 '''
-Algoritimo - Método de Newton (pseudocódigo)
+Algoritmo - Método de Newton (pseudocódigo)
 
 Dados x0, epson1 e epson2 > 0
 Passo 1: Calcular F(x^k) e J(x^k)
@@ -19,7 +24,6 @@ passo 6 k = k + 1
 
 '''
 
-
 def norma_infinita(vet):  # devolve o maior valor absoluto do vetor
     max_abs = max(vet, key=abs)
     return max_abs
@@ -27,10 +31,13 @@ def norma_infinita(vet):  # devolve o maior valor absoluto do vetor
 def transforma_funcoes(vet_eqs, vet_vars):  # recebe o vetor de equaçõess e o vetor de variáveis e devolve um vetor com funções lambdificada
     local_dict = {'e': E, 'pi': pi}  # dicionário que altera caracteres de string para constantes, ps: adicionar mais caso não funcionar em futuros testes
     vet_func = []
+    transf = standard_transformations + (implicit_multiplication_application, convert_xor)
+    print("F(x):")
     for eq in vet_eqs:
-        expr = parse_expr(eq, transformations="all", local_dict=local_dict)  # faz a transformação de string para expressão usando todos os tipos de transformações e o dicionário local
+        expr = parse_expr(eq, transformations=transf, local_dict=local_dict)  # faz a transformação de string para expressão usando todos os tipos de transformações e o dicionário local
         f = lambdify(vet_vars, expr)  # lambdifica as expressões
         vet_func.append(f)
+        print(expr)
     return vet_func
 
 def trasforma_jacobiana(vet_eqs, vet_vars):  # recebe o vetor de equaçõess e o vetor de variáveis e devolve uma matriz com equações de derivadas parciais em cada linha
@@ -57,7 +64,7 @@ def calc_funcoes(funcoes, vet_x):  # devolve um vetor onde foi aplicado vet_x no
     vet_res = []
     for f in funcoes: vet_res.append(float(f(*vet_x)))
     return vet_res
-
+'''
 def calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars):
     x = x_inicial.copy() # cria uma copia do vetor inicial de x
     jacobiana_calculo = calc_jacobiana(jacobiana, x) # deixa a matriz jacobiana com valores numericos para usar em calculos
@@ -83,7 +90,6 @@ def atualiza_xk(x_anterior, res_sistema):
     return x_atual
     
 
-
 def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
     res_F = calc_funcoes(funcoes, x_inicial)
     res_J = calc_jacobiana(jacobiana, x_inicial)
@@ -108,9 +114,8 @@ def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
     print("Solução geral: ")
     print(x_atual)
     return x_atual
-
-
-
+'''
+    
 # main
 ## Funcoes
 
@@ -120,13 +125,12 @@ vet_vars = [x, y, z]
 
 vet_eqs = [
     "3*x + cos(x*y) - 1/2",
-    "x^2 - 81(x+0.1)^2 + sin(z) + 1.06 ",
-    "e^(-xy) + 20z + (10pi - 3)/3 "
+    "x**2 - 81(x+0.1)**2 + sin(z) + 1.06 ",
+    "e**(-x*y) + 20*z + (10*pi - 3)/3 "
 ]
 
 condicao_parada = 10**-9
 x_inicial = [0.1, 0.1, -0.1]
-
 
 # Eqs para testes, conteudo da aula
 '''x, y = symbols('x y')
@@ -135,13 +139,15 @@ vet_vars = [x, y]
 vet_eqs = [
     "x + y -3",
     "x^2 + y**2 -9"
-]'''
+]
 
-condicao_parada = 0.01 # 10**-2
+condicao_parada = 10**-2
 x_inicial = [1, 5]
+'''
 
 # funcoes com lambdify
 funcoes = transforma_funcoes(vet_eqs, vet_vars)
 jacobiana = trasforma_jacobiana(vet_eqs, vet_vars)
 #calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars)
-calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars)
+
+# calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars)
