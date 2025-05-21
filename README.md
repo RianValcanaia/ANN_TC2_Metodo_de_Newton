@@ -125,11 +125,7 @@ x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
 
 - Funções utilizadas no cálculo para verificação do usuário.
 
-- Critério de parada
-
-$$
-\|F(x_k)\|_\infty < \varepsilon_1 \quad \text{e} \quad \|x^{k+1} - x^k\|_\infty < \varepsilon_2
-$$
+- Critério de parada: ||F(x_k)||∞ < ε₁  e  ||x^{k+1} - x^k||∞ < ε
 
 - Número de iterações até a convergência
 
