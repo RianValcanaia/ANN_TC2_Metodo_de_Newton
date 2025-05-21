@@ -7,6 +7,7 @@ Este projeto implementa o **método de Newton-Raphson multivariado** para resolv
 ## 🎯 Objetivo
 
 Resolver numericamente sistemas de equações não lineares da forma:
+
 $$
 F(x) = 0
 $$
@@ -21,6 +22,7 @@ Onde:
 ## 📖 Como Funciona o Método
 
 A cada iteração, o método executa:
+
 $$
 J(x_k) \cdot \Delta x = -F(x_k) \\
 x_{k+1} = x_k + \Delta x
@@ -43,33 +45,21 @@ O processo é repetido até que:
 
 ## 🔄 Pseudocódigo - Método de Newton
 
-Dados $x^{(0)}$, $\varepsilon_1$ e $\varepsilon_2 > 0$:
+Dados x₀, ε₁ e ε₂ > 0
 
-Passo 1:
-Calcular $F(x^{(k)})$ e $J(x^{(k)})$
+Passo 1: Calcular F(xᵏ) e J(xᵏ)
 
-Passo 2:
-Se $|F(x^{(k)})|_\infty < \varepsilon_1$, então:
- $x^* = x^{(k)}$
- Pare
-Caso contrário, continue.
+Passo 2: Se ||F(xᵏ)||∞ < ε₁ então x* = xᵏ. Pare 
 
-Passo 3:
-Obtenha $S^{(k)}$, solução do sistema linear:
- $J(x^{(k)}) \cdot S^{(k)} = -F(x^{(k)})$
+Caso contrário:
 
-Passo 4:
-Calcule:
- $x^{(k+1)} = x^{(k)} + S^{(k)}$
+Passo 3: Obtenha Sᵏ, solução do sistema linear: J(xᵏ) · Sᵏ = -F(xᵏ)
 
-Passo 5:
-Se $|x^{(k+1)} - x^{(k)}|_\infty < \varepsilon_2$, então:
- $x^* = x^{(k+1)}$
- Pare
+Passo 4: Calcule xᵏ⁺¹ = xᵏ + Sᵏ
 
-Passo 6:
-$k \leftarrow k + 1$
-Volte ao Passo 1
+Passo 5: Se ||xᵏ⁺¹ - xᵏ||∞ < ε₂ então x* = xᵏ⁺¹ Pare
+
+Passo 6: k = k + 1. Volte ao Passo 1
 
 
 ## 🧠 Equações de Exemplo
