@@ -1,66 +1,49 @@
 from sympy import symbols, diff, lambdify, pi, E, Matrix, solve_linear_system
 from sympy.parsing.sympy_parser import parse_expr
 
-'''
-Algoritmo - Método de Newton (pseudocódigo)
-
-Dados x0, epson1 e epson2 > 0
-Passo 1: Calcular F(x^k) e J(x^k)
-passo 2: Se || F(x^k) || norma infinita < epson1, então x*=x^k
-e pare;
-caso contrario:
-Passo 3 Obtenha S^k, solução do sistema linear J(x^k)*S^k = -F(x^k)
-Passo 4 FAÇA: x^k+1 = x^k + s^k
-passo 5 Se || x^k+1 - x^k || norma infinita < epson2, faça x* = x^k+1
-e pare;
-caso contrario:
-passo 6 k = k + 1
-	volte ao passo 1
-
-'''
 def norma_infinita(vet):  # devolve o maior valor absoluto do vetor
     return max(abs(val) for val in vet)
 
-def parse_funcoes(vet_eqs):  # realiza transforma as string em expressões do sympy
+def parse_funcoes(vet_eqs):  # transforma as string em expressões do sympy
     local_dict = {'e': E, 'pi': pi}  # dicionário utilizado para alterar constantes
     vet_expr = []
-    print("F(x):")
+    print("F(x): {")
     for eq in vet_eqs:
-        expr = parse_expr(eq, transformations='all', local_dict=local_dict)  # transforma cada eq em string em expressão
+        expr = parse_expr(eq, transformations='all', local_dict=local_dict)  # transforma cada string equação em expressão
         vet_expr.append(expr)  # adiciona ao vetor
-        print(expr)
+        print("    ", expr,"= 0")  # printa a expressão no formato sympy.Expr para verificação do usuário
+    print("}\n")
     return vet_expr  
 
-def lambdifica(vet_expr, vet_vars):  # labdifica as funções sendo possível jogar variáveis nas expressões
-    return [lambdify(vet_vars, expr, modules='math') for expr in vet_expr]
+def lambdifica(vet_expr, vet_vars):  # labdifica as funções fazendo com que seja possível jogar variáveis nas expressões
+    return [lambdify(vet_vars, expr, modules='math') for expr in vet_expr]  # retorna um vetor de expressões lambdificadas
 
 def trasforma_jacobiana(vet_eqs_expr, vet_vars):  # recebe o vetor de sympy.Expr e o vetor de variáveis e devolve uma matriz com equações de derivadas parciais em cada linha
     J = []
-    for eq in vet_eqs_expr:
+    for eq in vet_eqs_expr:  # para cada equação deriva em relação a uma variável
         linha = []
         for var in vet_vars:
             derivada = diff(eq, var)  # deriva equação em relação a var 
             func = lambdify(vet_vars, derivada, modules='math')  # lambdifica essa equação
-            linha.append(func)
-        J.append(linha)
+            linha.append(func)  # adiciona a função na linha
+        J.append(linha)  # adiciona a linha na matriz
     return J
 
-def calc_jacobiana(jacobiana, vet_x):  # devolve uma matriz de resposta aplicando vet_x na matriz jacobiana
+def calc_jacobiana(jacobiana, vet_x):  # devolve uma matriz aplicando vet_x na matriz jacobiana
     vet_res = []
-    for linha in jacobiana:
+    for linha in jacobiana: 
         nova_linha = []
         for func in linha:
-            nova_linha.append(float(func(*vet_x)))
-        vet_res.append(nova_linha)
-    return vet_res
+            nova_linha.append(float(func(*vet_x)))  #  para cada derivada aplica as variáveis e adiciona na nova_linha
+        vet_res.append(nova_linha)  # adiciona nova_linha na matriz
+    return vet_res  # retorna uma matriz com vet_x aplicado em cada derivada
 
-def calc_funcoes(funcoes, vet_x):  # devolve um vetor onde foi aplicado vet_x no vetor de funcoes
+def calc_funcoes(funcoes, vet_x):  # devolve um vetor onde foi aplicado vet_x no vetor de funções
     vet_res = []
     for f in funcoes: vet_res.append(float(f(*vet_x)))
     return vet_res
 
 def calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars):
-
     x = x_inicial.copy() # cria uma copia do vetor inicial de x
     jacobiana_calculo = calc_jacobiana(jacobiana, x) # deixa a matriz jacobiana com valores numericos para usar em calculos
     funcoes_calculo = calc_funcoes(funcoes, x) # deixa as funcoes com valores numericos para usar em calculos
@@ -97,41 +80,30 @@ def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
         res_F = calc_funcoes(funcoes, x_atual) # recalcula as funções com o valor de x atualizado
         i+=1 # incrementa o contador de iterações
 
-    print("numero iteracoes: ", i)
-    print("Solução geral: ", x_atual)
+    print("Critério ||F(X^k)|| <", condicao_parada, "e ||X^k - X^(k+1)|| <", condicao_parada)
+    print("Número de iterações: ", i)
+    for i in range(len(vet_vars)): print(vet_vars[i], "=", x_atual[i])
     return x_atual
 
 
 
 # ====================== MAIN ======================
+x, y, z = symbols('x y z')  # cria variáveis simbólicas que serão usadas para definiz expressões matemáticas simbólicas
+vet_vars = [x, y, z]  # adiciona ao vetor essas variáveiz simbólicas
 
-x, y, z = symbols('x y z')
-vet_vars = [x, y, z]
-
-vet_eqs = [
+# vetor de equações em strings, é possível transformar as expressões sem ter o símbolo de multiplicação, mas é recomendado utilizar. O mesmo para ** que é reconhecido ^.
+vet_eqs = [  
     "3*x + cos(y*z) - 1/2",
     "x^2 - 81*(y+0.1)**2 + sin(z) + 1.06 ",
-    "e**(-x*y) + 20*z + (10*pi - 3)/3 "
+    "e**(-x*y) + 20z + (10*pi - 3)/3 "
 ]
 
-condicao_parada = 10**-9
+condicao_parada = 10**-8 
 x_inicial = [0.1, 0.1, -0.1]
 
-'''
-# Eqs para testes, conteudo da aula
-x, y = symbols('x y')
-vet_vars = [x, y]
+vet_eqs_expr = parse_funcoes(vet_eqs)  # transforma as equações em expressões simbólicas
+funcoes = lambdifica(vet_eqs_expr, vet_vars)  # labdifica as expreções
+jacobiana = trasforma_jacobiana(vet_eqs_expr, vet_vars)  # faz a matriz jacobiana lambdificada
 
-vet_eqs = [
-    "x + y -3",
-    "x^2 + y**2 -9"
-]
-
-condicao_parada = 10**-2
-x_inicial = [1, 5]
-'''
-vet_eqs_expr = parse_funcoes(vet_eqs)
-funcoes = lambdifica(vet_eqs_expr, vet_vars)
-jacobiana = trasforma_jacobiana(vet_eqs_expr, vet_vars)
-
+# calcula o vetor solução utilizando método de newton
 calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars)
