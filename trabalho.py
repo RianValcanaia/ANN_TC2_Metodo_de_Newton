@@ -69,35 +69,33 @@ def calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars):
         jacobiana_calculo[i].append(-1*funcoes_calculo[i]) # adiciona ao final de todas as linhas da matriz jacobiana o valor de -F(x). O valor é negativo conforme passado em aula para montar o sistema linear
         # essa adição dos valores de F ao final de cada linha da matriz jacobiana serve para montar a matriz na forma aumentada, com a ultima coluna sendo a coluna de termos independentes
         # isto é vantajoso pois o SymPy possui uma subrotina de solução de sistemas lineares no formato de matriz aumentada, que será usado logo em seguida nesta função 
-    #print(jacobiana_calculo)
     sistema_linear = Matrix(jacobiana_calculo) # transforma a matriz jacobiana aumentada em uma matriz reconhecida pelo SymPy para que possam ser chamadas subrotinas 
     res_sistema = solve_linear_system(sistema_linear, *vet_vars) # aqui está a subrotina do SymPy que resolve o sistema linear representado por uma matriz aumentada. 
     # para a subrotina funcionar voce deve passar a matriz aumentada e as variaveis do sistema
     res_sistema_numerico = [res_sistema[var] for var in vet_vars] # a subrotina de solução de sistema linear do SymPy retorna uma lista que contém o resultado e qual variável está atrelada àquele resultado 
     # para conseguir trabalhar de forma mais rápida e simples com os resultados, nós criamos um vetor apenas com os valores numéricos ordenados pela ordem de variáveis (x, y)
-    #print("Solucao sistema: ")
-    #print(res_sistema_numerico)
     return res_sistema_numerico
 
 def atualiza_xk(x_anterior, res_sistema):
     return [x_anterior[i] + res_sistema[i] for i in range(len(x_anterior))]
+    # rotina criada para atualizar o valor de x^k para o código na função calc_Newton ficar mais legível
     
 
 def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
-    x_atual = x_inicial.copy()
-    res_F = calc_funcoes(funcoes, x_atual)
-    max_iteracoes = 15
-    i = 0
+    x_atual = x_inicial.copy() # cria uma cópia do valor de x_inicial 
+    res_F = calc_funcoes(funcoes, x_atual) # calcula os valores numéricos das funções 
+    max_iteracoes = 15 # numero maximo de iterações caso não convirja
+    i = 0 # contador simples
 
-    while((norma_infinita(res_F) > condicao_parada) and i < max_iteracoes):
-        res_sistema = calc_sistema_linear(funcoes, jacobiana, x_atual, vet_vars)
-        x_novo = atualiza_xk(x_atual, res_sistema)
+    while((norma_infinita(res_F) > condicao_parada) and i < max_iteracoes): # enquanto a norma infinita das funções for maior que a condição de parada E o contador for menor que o nº max de iterações
+        res_sistema = calc_sistema_linear(funcoes, jacobiana, x_atual, vet_vars) # resolve o sistema linear
+        x_novo = atualiza_xk(x_atual, res_sistema) # atualiza o x_novo
 
-        if (norma_infinita(res_sistema) < condicao_parada): break
+        if (norma_infinita(res_sistema) < condicao_parada): break # se a norma infinita da solução do sistema for menor que epsilon retorna o x_atual
 
-        x_atual = x_novo
-        res_F = calc_funcoes(funcoes, x_atual)
-        i+=1
+        x_atual = x_novo 
+        res_F = calc_funcoes(funcoes, x_atual) # recalcula as funções com o valor de x atualizado
+        i+=1 # incrementa o contador de iterações
 
     print("numero iteracoes: ", i)
     print("Solução geral: ", x_atual)
