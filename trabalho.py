@@ -19,8 +19,7 @@ passo 6 k = k + 1
 
 '''
 def norma_infinita(vet):  # devolve o maior valor absoluto do vetor
-    max_abs = max(vet, key=abs)
-    return max_abs
+    return max(abs(val) for val in vet)
 
 def parse_funcoes(vet_eqs):  # realiza transforma as string em expressões do sympy
     local_dict = {'e': E, 'pi': pi}  # dicionário utilizado para alterar constantes
@@ -61,9 +60,11 @@ def calc_funcoes(funcoes, vet_x):  # devolve um vetor onde foi aplicado vet_x no
     return vet_res
 
 def calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars):
+
     x = x_inicial.copy() # cria uma copia do vetor inicial de x
     jacobiana_calculo = calc_jacobiana(jacobiana, x) # deixa a matriz jacobiana com valores numericos para usar em calculos
     funcoes_calculo = calc_funcoes(funcoes, x) # deixa as funcoes com valores numericos para usar em calculos
+    
     for i in range(len(funcoes_calculo)):
         jacobiana_calculo[i].append(-1*funcoes_calculo[i]) # adiciona ao final de todas as linhas da matriz jacobiana o valor de -F(x). O valor é negativo conforme passado em aula para montar o sistema linear
         # essa adição dos valores de F ao final de cada linha da matriz jacobiana serve para montar a matriz na forma aumentada, com a ultima coluna sendo a coluna de termos independentes
@@ -79,34 +80,27 @@ def calc_sistema_linear(funcoes, jacobiana, x_inicial, vet_vars):
     return res_sistema_numerico
 
 def atualiza_xk(x_anterior, res_sistema):
-    x_atual = x_anterior.copy()
-    for i in range(len(x_atual)):
-        x_atual[i] = x_anterior[i] + res_sistema[i]
-    return x_atual
+    return [x_anterior[i] + res_sistema[i] for i in range(len(x_anterior))]
     
 
 def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
-    res_F = calc_funcoes(funcoes, x_inicial)
     x_atual = x_inicial.copy()
-    x_anterior = [a + 1 for a in x_inicial]
+    res_F = calc_funcoes(funcoes, x_atual)
     max_iteracoes = 15
     i = 0
 
     while((norma_infinita(res_F) > condicao_parada) and i < max_iteracoes):
         res_sistema = calc_sistema_linear(funcoes, jacobiana, x_atual, vet_vars)
-        x_anterior = x_atual.copy()
-        x_atual = atualiza_xk(x_atual, res_sistema)
-        res_F = calc_funcoes(funcoes, x_atual)
-        res_J = calc_jacobiana(jacobiana, x_atual)
-        vetor_diferenca = [a - b for a, b in zip(x_atual, x_anterior)]
-        i = i + 1
-        #if(norma_infinita(vetor_diferenca) < condicao_parada):
-        #   return x_atual
+        x_novo = atualiza_xk(x_atual, res_sistema)
 
-    print("numero iteracoes:")
-    print(i)
-    print("Solução geral: ")
-    print(x_atual)
+        if (norma_infinita(res_sistema) < condicao_parada): break
+
+        x_atual = x_novo
+        res_F = calc_funcoes(funcoes, x_atual)
+        i+=1
+
+    print("numero iteracoes: ", i)
+    print("Solução geral: ", x_atual)
     return x_atual
 
 
