@@ -67,7 +67,7 @@ def atualiza_xk(x_anterior, res_sistema):
 def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
     x_atual = x_inicial.copy() # cria uma cópia do valor de x_inicial 
     res_F = calc_funcoes(funcoes, x_atual) # calcula os valores numéricos das funções 
-    max_iteracoes = 15 # numero maximo de iterações caso não convirja
+    max_iteracoes = 15 # número máximo de iterações caso não convirja
     i = 0 # contador simples
 
     while((norma_infinita(res_F) > condicao_parada) and i < max_iteracoes): # enquanto a norma infinita das funções for maior que a condição de parada E o contador for menor que o nº max de iterações
@@ -82,28 +82,29 @@ def calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars):
 
     print("Critério ||F(X^k)|| <", condicao_parada, "e ||X^k - X^(k+1)|| <", condicao_parada)
     print("Número de iterações: ", i)
+    if (i == max_iteracoes): print("Atingiu o número máximo de iterações definidas.")
     for i in range(len(vet_vars)): print(vet_vars[i], "=", x_atual[i])
     return x_atual
 
 
 
 # ====================== MAIN ======================
-x, y, z = symbols('x y z')  # cria variáveis simbólicas que serão usadas para definiz expressões matemáticas simbólicas
-vet_vars = [x, y, z]  # adiciona ao vetor essas variáveiz simbólicas
+x, y, z = symbols('x y z')  # cria variáveis simbólicas que serão usadas para definir expressões matemáticas simbólicas
+vet_vars = [x, y, z]  # adiciona ao vetor essas variáveis simbólicas
 
-# vetor de equações em strings, é possível transformar as expressões sem ter o símbolo de multiplicação, mas é recomendado utilizar. O mesmo para ** que é reconhecido ^.
+# vetor de equações em strings, é possível transformar as expressões sem ter o símbolo de multiplicação, mas é recomendado utilizar. O mesmo para ** que é reconhecido como ^.
 vet_eqs = [  
     "3*x + cos(y*z) - 1/2",
     "x^2 - 81*(y+0.1)**2 + sin(z) + 1.06 ",
     "e**(-x*y) + 20z + (10*pi - 3)/3 "
 ]
 
-condicao_parada = 10**-8 
+condicao_parada = 10**-7
 x_inicial = [0.1, 0.1, -0.1]
 
 vet_eqs_expr = parse_funcoes(vet_eqs)  # transforma as equações em expressões simbólicas
-funcoes = lambdifica(vet_eqs_expr, vet_vars)  # labdifica as expreções
+funcoes = lambdifica(vet_eqs_expr, vet_vars)  # labdifica as expressões
 jacobiana = trasforma_jacobiana(vet_eqs_expr, vet_vars)  # faz a matriz jacobiana lambdificada
 
-# calcula o vetor solução utilizando método de newton
+# calcula o vetor solução utilizando método de Newton
 calc_Newton(x_inicial, condicao_parada, funcoes, jacobiana, vet_vars)
