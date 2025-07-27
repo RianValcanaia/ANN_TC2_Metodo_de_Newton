@@ -2,7 +2,7 @@
 
 <img src="https://media.giphy.com/media/iIqmM5tTjmpOB9mpbn/giphy.gif" width="200px" alt="Gif animado"/>
 
-# <code><strong>Método de Newton para Sistemas Não Lineares</strong></code>
+# <code><strong>Resolução de Sistemas de Equações não Lineares pelo Método de Newton-Raphson</strong></code>
 
 <em>Este projeto implementa o **método de Newton-Raphson multivariado** para resolver sistemas de equações não lineares com duas ou mais variáveis, utilizando a biblioteca **SymPy** para manipulação simbólica e numérica.
 </em>
