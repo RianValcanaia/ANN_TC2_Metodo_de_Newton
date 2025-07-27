@@ -1,10 +1,35 @@
-# Método de Newton para Sistemas Não Lineares
+<div align="center" id="topo">
 
-Este projeto implementa o **método de Newton-Raphson multivariado** para resolver sistemas de equações não lineares com duas ou mais variáveis, utilizando a biblioteca **SymPy** para manipulação simbólica e numérica.
+<img src="https://media.giphy.com/media/iIqmM5tTjmpOB9mpbn/giphy.gif" width="200px" alt="Gif animado"/>
 
+# <code><strong>Método de Newton para Sistemas Não Lineares</strong></code>
 
+<em>Este projeto implementa o **método de Newton-Raphson multivariado** para resolver sistemas de equações não lineares com duas ou mais variáveis, utilizando a biblioteca **SymPy** para manipulação simbólica e numérica.
+</em>
 
-## 🎯 Objetivo
+[![Python Usage](https://img.shields.io/badge/Python-100%25-blue?style=for-the-badge\&logo=python)]()
+[![Status](https://img.shields.io/badge/Status-Concluído-green?style=for-the-badge)]()
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Visite%20meu%20perfil-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/rian-carlos-valcanaia-b2b487168/)
+
+</div>
+
+## Índice
+
+- [🎯 Objetivos](#-objetivos)
+- [📖 Como Funciona o Método](#-como-funciona-o-método)
+    - [🔄 Pseudocódigo - Método de Newton](#-pseudocódigo---método-de-newton)
+    - [🧠 Equações de Exemplo](#-equações-de-exemplo)
+- [📥 Entradas do sistema](#-entradas-do-sistema)
+- [🧰 Funcionalidades](#-funcionalidades)
+- [📊 Exemplo de Execução](#-exemplo-de-execução)
+- [🧾 Saída Esperada](-saída-esperada)
+- [🧰 Requisitos](-requisitos)
+- [📂 Como executar](#-como-executar)
+- [👨‍🏫 Envolvidos](#-envolvidos)
+- [📅 Curso](#-curso)
+- [📄 Código-fonte](#-código-fonte)
+
+## 🎯 Objetivos
 
 Resolver numericamente sistemas de equações não lineares da forma:
 
@@ -18,6 +43,7 @@ Onde:
 
 - O método aplica derivadas parciais (Jacobiana) e resolve sistemas lineares iterativamente.
 
+[⬆ Voltar ao topo](#topo)
 
 ## 📖 Como Funciona o Método
 
@@ -42,6 +68,7 @@ O processo é repetido até que:
 
 - $|x^{k+1} - x^k|_\infty < \varepsilon_2$
 
+[⬆ Voltar ao topo](#topo)
 
 ## 🔄 Pseudocódigo - Método de Newton
 
@@ -61,6 +88,7 @@ Passo 5: Se ||xᵏ⁺¹ - xᵏ||∞ < ε₂ então x* = xᵏ⁺¹ Pare
 
 Passo 6: k = k + 1. Volte ao Passo 1
 
+[⬆ Voltar ao topo](#topo)
 
 ## 🧠 Equações de Exemplo
 
@@ -72,8 +100,9 @@ vet_eqs = [
 ]
 ```
 
+[⬆ Voltar ao topo](#topo)
 
-## 🔢 Entradas
+## 📥 Entradas do sistema
 
 - x_inicial: vetor com a estimativa inicial para as variáveis;
 
@@ -83,8 +112,9 @@ vet_eqs = [
 
 - vet_vars: lista com variáveis simbólicas (por exemplo, [x, y, z]).
 
+[⬆ Voltar ao topo](#topo)
 
-## ⚙️ Estrutura do Código
+## 🧰 Funcionalidades
 
 - `parse_funcoes(vet_eqs)` Transforma as equações em objetos sympy.Expr
 
@@ -102,8 +132,9 @@ vet_eqs = [
 
 - `calc_Newton(...)` Função principal que controla o laço de iteração
 
+[⬆ Voltar ao topo](#topo)
 
-## 💡 Exemplo de Execução
+## 📊 Exemplo de Execução
 Nos trechos abaixo altera conforme as suas funções:
 
 ```python
@@ -120,6 +151,7 @@ condicao_parada = 10**-8  # adicione a condição de parada
 x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
 ```
 
+[⬆ Voltar ao topo](#topo)
 
 ## 🧾 Saída Esperada
 
@@ -131,6 +163,7 @@ x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
 
 - Valores finais das variáveis x, y, z;
 
+[⬆ Voltar ao topo](#topo)
 
 ## 🧰 Requisitos
 
@@ -141,7 +174,8 @@ x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
     ```python
     pip install sympy
     ```
-
+    
+[⬆ Voltar ao topo](#topo)
 
 ## 📂 Como executar
 
@@ -151,12 +185,16 @@ x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
    ```
 2. Ou copie o código do arquivo "trabalho.py" no [Google Colab](https://colab.research.google.com)
 
+[⬆ Voltar ao topo](#topo)
 
 ## 👨‍🏫 Envolvidos
 
 - Professor: Jarbas Ferrari
-- Estudantes: [Lucas Mamacedo](https://github.com/lucasomac0) e [Rian Valcanaia](https://github.com/RianValcanaia)
+- Estudantes:
+    - [Lucas Mamacedo](https://github.com/lucasomac0)
+    -  [Rian Valcanaia](https://github.com/RianValcanaia)
 
+[⬆ Voltar ao topo](#topo)
 
 ## 📅 Curso
 
@@ -164,8 +202,10 @@ x_inicial = [0.1, 0.1, -0.1]  # vetor inicial
 - Disciplina: Análise Numérica
 - Semestre: 4º 
 
+[⬆ Voltar ao topo](#topo)
 
-## 📄 Arquivo-fonte
+## 📄 Código-fonte
 
-O código completo do projeto está disponível no GitHub:  
-[https://github.com/RianValcanaia/TC2_ANN_Metodo_de_Newton](https://github.com/RianValcanaia/TC2_ANN_Metodo_de_Newton)
+🔗 [https://github.com/RianValcanaia/TC2_ANN_Metodo_de_Newton](https://github.com/RianValcanaia/TC2_ANN_Metodo_de_Newton)
+
+[⬆ Voltar ao topo](#topo)
